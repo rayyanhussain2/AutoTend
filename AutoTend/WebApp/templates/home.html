@@ -33,14 +33,14 @@
 
   <!--home-->
   <div id="home" class="pane">
-    <h2>Class History</h2>
-    <button class="btn add-btn" onclick="window.location.href='{% url 'lecture' %}'">Add New Class</button>
+    <h2>Lecture History</h2>
+    <button class="btn add-btn" onclick="window.location.href='{% url 'lecture' %}'">Add New Lecture</button>
     <div style="overflow-x: auto;">
       <table class="data-table">
         <thead>
           <tr>
-            <th>Class Date</th>
-            <th>Attended</th>
+            <th>Date</th>
+            <th>Students Attended</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -115,7 +115,7 @@
       </div>
       <div class="stat-card">
         <div class="stat-number">{{analytics.classCount}}</div>
-        <div class="stat-label">Total Classes</div>
+        <div class="stat-label">Total Lectures</div>
       </div>
       <div class="stat-card">
         <div class="stat-number">{{analytics.studentCount}}</div>
