@@ -1,0 +1,282 @@
+{%load static%}  
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AutoTend - Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <link rel="icon" type="image/x-icon" href="{% static 'brand/favicon.ico' %}">
+
+  <link rel="manifest" href="{% static 'manifest.json' %}">
+  <link rel="icon" href="{% static 'icons/icon-192.png' %}">
+  <meta name="theme-color" content="#1f1f1f">
+  
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+
+<body>
+  <nav class="navbar">
+    <img src="{% static 'brand/logo.png' %}" onclick="window.location.href='{% url 'home' %}'"/>
+    <button class="tab" onclick="showPane('home')">Home</button>
+    <button class="tab" onclick="showPane('groundtruth')">Ground Truth</button>
+    <button class="tab" onclick="showPane('analytics')">Analytics</button>
+    <button class="tab" onclick="showPane('students')">Students</button>
+    <button class="tab" onclick="openModal('reset-confirm-modal');">Reset</button>
+  </nav>
+  
+  <p id="errorMsg"> {{errorMsg}} </p>
+
+  <!--home-->
+  <div id="home" class="pane">
+    <h2>Class History</h2>
+    <button class="btn add-btn" onclick="window.location.href='{% url 'lecture' %}'">Add New Class</button>
+    <div style="overflow-x: auto;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Class Date</th>
+            <th>Attended</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for class in classes %}
+          <tr>
+            <td>{{ class.1.0 }}</td>
+            <td>{{ class.2 }} / {{ totalStudents }}</td>
+            <td>
+              <button class="btn view-btn" onclick="window.location.href='{% url 'lecture' %}?classID={{ class.0 }}'">View</button>
+              <button class="btn add-btn" type="button" onclick="toggleForm('form-{{ forloop.counter }}')">Add Student</button>
+            </td>
+
+          </tr>
+          <tr id="form-{{ forloop.counter }}" style="display: none;">
+            <td colspan="3">
+              <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="addManual" value="{{ class.0 }}">
+                <input type="text" name="rollNo" placeholder="Enter Roll No">
+                <button type="submit" class="btn submit-btn">Submit</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+
+  <!-- Ground Truth Pane -->
+  <div id="groundtruth" class="pane">
+    <h2>Ground Truth Management</h2>
+    <div style="margin: 1.5rem 0;">
+      <div class="upload-btn-wrapper">
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="gTruth">
+          <input type="file" id="csvUpload" accept=".zip" name="gTruth" onchange="displayFileName()">
+          <label for="csvUpload" class="upload-btn">
+            <i class="fas fa-upload"></i>
+            <span class="upload-btn-text">Upload Zip File</span>
+          </label>
+
+          <!-- Display the selected file name -->
+          <p id="file-name" style="color: #ccc; margin-top: 0.5rem;"></p>
+          <button class="btn save-btn" type="submit">Save Changes</button>
+        </form>
+      </div>        
+    </div>
+  </div>
+
+  <!-- Analytics Pane -->
+  <div id="analytics" class="pane">
+    <h2>Attendance Analytics</h2>
+    
+    <div class="date-filters">
+      <form method="GET">
+        <label>From:</label>
+        <input type="date" name="from" id="fromDate">
+        <label>To:</label>
+        <input type="date" name="to" id="toDate">
+        <button class="btn view-btn" type="submit">Generate Stats</button>
+      </form>
+    </div>
+    
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-number">{{analytics.avgAttendance}}</div>
+        <div class="stat-label">Average Attendance</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{analytics.classCount}}</div>
+        <div class="stat-label">Total Classes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{analytics.studentCount}}</div>
+        <div class="stat-label">Total Students</div>
+      </div>
+    </div>
+    
+    <h3 style="margin-top: 2rem;">Student Details</h3>
+    <div style="overflow-x: auto;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Roll No.</th>
+            <th>Classes Attended</th>
+            <th>Percentage</th>
+          </tr>
+        </thead>
+        <tbody id="trendsTable">
+          {% for student in analytics.studentAttendance %}
+          <tr>
+            <td>{{ student.0 }}</td>
+            <td>{{ student.1 }} / {{analytics.classCount}}</td>
+            <td>{{ student.2 }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Students Pane -->
+  <div id="students" class="pane">
+    <h2>Students</h2>
+    <button class="btn add-btn" type="button" onclick="window.location.href='{% url 'home' %}?getCSV=1'">Download All Data (CSV)</button>
+    <div style="overflow-x: auto;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Roll No</th>
+            <th>Overall Attendance</th>
+            <th>Percentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students %}
+          <tr>
+            <td>{{student.0}}</td>
+            <td>{{student.1}} / {{totalClasses}}</td>
+            <td>{{student.2}}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Reset Confirmation Modal -->
+  <div class="modal-overlay" id="reset-confirm-modal">
+    <div class="modal">
+      <h2>Reset Confirmation</h2>
+      <p>Are you sure you want to reset all settings? This action cannot be undone.</p>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; margin-top: 2rem;">
+        <form method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="reset" />
+          <button class="btn delete-btn" type="submit">Yes, Reset Everything</button>
+        </form>
+          <button class="btn back-btn" onclick="closeModal('reset-confirm-modal')">Cancel</button>
+        </div>
+    </div>
+  </div>
+
+</body>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register("{% static 'sw.js' %}")
+      .then(() => console.log("Service Worker registered"));
+  }
+  // Tab navigation
+  var studentCount = {{ studentCount }};
+  var lockStatus = {{ lock }};
+  var isAnalytics = {{isAnalytics}};
+
+  if (studentCount > 0 && !lockStatus){
+    //tab
+    var navbarChildren = document.getElementsByClassName("navbar")[0];
+    navbarChildren.children[2].style.display = "none";
+    navbarChildren.children[1].classList.add("active");
+
+    //pane
+    document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+    document.getElementsByClassName("pane")[0].classList.add("active");
+  }else{
+    if(!lockStatus){
+      //tab
+      var navbarChildren = document.getElementsByClassName("navbar")[0];
+      navbarChildren.children[1].style.display = "none";
+      navbarChildren.children[2].classList.add("active");
+      
+      //pane
+      document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+      document.getElementsByClassName("pane")[1].classList.add("active");
+    }else{
+      //tab
+      var navbarChildren = document.getElementsByClassName("navbar")[0];
+      navbarChildren.children[1].style.display = "none";
+      navbarChildren.children[2].style.display = "none";
+      navbarChildren.children[5].style.display = "none";
+      navbarChildren.children[3].classList.add("active");
+
+      //pane
+      document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+      document.getElementsByClassName("pane")[2].classList.add("active");
+    }
+  }
+
+  if (isAnalytics == 1){
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove("active"));
+    document.getElementsByClassName("tab")[2].classList.add("active");
+
+    document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+    document.getElementsByClassName("pane")[2].classList.add("active");
+  }
+
+  function toggleForm(id) {
+    const row = document.getElementById(id);
+    row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+  }
+
+  function showPane(paneId) {
+    //pane 
+    document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+    document.getElementById(paneId).classList.add('active');
+    
+    //tab
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    if (paneId === 'home') {
+      document.querySelectorAll('.tab')[0].classList.add('active');
+    } else if (paneId === 'analytics') {
+      document.querySelectorAll('.tab')[2].classList.add('active');
+    } else if (paneId === 'students') {
+      document.querySelectorAll('.tab')[3].classList.add('active');
+    } else if (paneId === 'groundtruth') {
+      document.querySelectorAll('.tab')[1].classList.add('active');
+    }
+  }
+
+  // Open and close modals
+  function openModal(modalId) {
+    document.getElementById(modalId).style.display = 'flex';
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+  }
+
+  function displayFileName() {
+    var fileInput = document.getElementById('csvUpload');
+    var fileName = fileInput.files[0] ? fileInput.files[0].name : 'No file selected';
+    document.getElementById('file-name').textContent = 'Selected File: ' + fileName;
+  }
+</script>

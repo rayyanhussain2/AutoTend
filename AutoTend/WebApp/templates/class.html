@@ -1,0 +1,134 @@
+{%load static%}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>AutoTend - Class</title>
+  <link rel="icon" type="image/x-icon" href="{% static 'brand/favicon.ico' %}">
+
+  <link rel="manifest" href="{% static 'manifest.json' %}">
+  <link rel="icon" href="{% static 'icons/icon-192.png' %}">
+  <meta name="theme-color" content="#1f1f1f">
+
+  <link rel="stylesheet" href="{% static 'css/class.css' %}">
+</head>
+
+<body>
+  <nav class="navbar">
+    <img src="{% static 'brand/logo.png' %}" />
+    <a href="{%url 'home'%}" class="tab">Back</a>
+    <div style="margin-left: auto;">
+      <form method="POST" id="logoutForm">
+        {% csrf_token %}
+        <input type="hidden" name="logoutHidden">
+      </form>
+    </div>
+  </nav>
+
+  <p id="errorMsg">{{errorMsg}}</p>
+  
+  <div class="container">
+    <h1>Class Photo Management</h1>
+    
+    <div class="photo-upload">
+      <form method="post" enctype="multipart/form-data" id="photoForm">
+        {% csrf_token %}
+        <input type="hidden" name="classID" value="{{classID}}">
+        <input type="file" id="photoInput" name="photos" accept="image/*" multiple>
+        <label for="photoInput" class="file-label btn">Select Photos</label>
+        <button class="btn photo-btn save-btn" type="submit">Upload Photos</button>
+        <br/>
+        <label class="selected-files" id="selectedFiles">No files selected</label>
+      </form>
+    </div>
+    
+    <div class="photo-container">
+      <h2 class="section-title">Identified Faces</h2>
+      <div class="photo-grid" id="unclusteredGrid">
+        <!-- Example photos -->
+        {% for face in faces %}
+        <div class="photo-card">
+          <div class="photo-frame">
+            {% load static %}
+            <img src="{% static face.2 %}" alt="Student photo">
+            <div class="confidence-badge">Matching Score: {{face.1}}%</div>
+          </div>
+          <div class="photo-info">
+            <form method ="POST">
+              {% csrf_token %}
+              <input type="text" name="rollNoNew" placeholder="{{face.3}}" value="{{face.3}}">
+              <input type="hidden" name="update" placeholder="{{face.3}}">
+              <input type="hidden" name="classID" value="{{classID}}" />
+              <input type="hidden" name="embedID" value="{{face.0}}" />
+              <button type='submit' class ="btn save-btn" style="width: 100%;" onclick="saveStudentId(this)">Save</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+
+      </div>
+          
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="delete" value="{{ classID }}">
+      <div style="margin: 2rem 0; text-align: center;">
+        <button class="btn delete-btn">Delete</button>
+      </div>
+      </form>
+  </div>
+</body>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  // File input element
+  const photoInput = document.getElementById('photoInput');
+  const selectedFilesDisplay = document.getElementById('selectedFiles');
+  
+  // Show selected file names when files are chosen
+  photoInput.addEventListener('change', function() {
+    if (this.files.length > 0) {
+      let fileNames = Array.from(this.files).map(file => file.name).join(', ');
+      if (fileNames.length > 50) {
+        fileNames = fileNames.substring(0, 50) + '...';
+      }
+      selectedFilesDisplay.textContent = `Selected ${this.files.length} file(s): ${fileNames}`;
+    } else {
+      selectedFilesDisplay.textContent = 'No files selected';
+    }
+  });
+});
+
+
+function saveStudentId(button) {
+  const photoCard = button.closest('.photo-card');
+  const studentIdInput = photoCard.querySelector('input[type="text"]');
+  const studentId = studentIdInput.value.trim();
+  
+  if (!studentId) {
+    alert("Please enter a student ID");
+    return;
+  }
+  
+  const img = photoCard.querySelector('img').src;
+  const confidenceBadge = photoCard.querySelector('.confidence-badge').innerText;
+  
+  const clusteredPhotoCard = document.createElement('div');
+  clusteredPhotoCard.className = 'photo-card';
+  clusteredPhotoCard.innerHTML = `
+    <div class="photo-frame">
+      <img src="${img}" alt="Student photo">
+      <div class="confidence-badge">${confidenceBadge}</div>
+    </div>
+    <div class="photo-info">
+      <div class="student-id">Student ID: ${studentId}</div>
+    </div>
+  `;
+  
+  document.getElementById('clusteredGrid').appendChild(clusteredPhotoCard);
+  photoCard.remove();
+}
+
+</script>
+
+</html>

@@ -1,0 +1,6 @@
+django 
+opencv-python
+scikit-learn
+onnxruntime
+insightface
+matplotlib

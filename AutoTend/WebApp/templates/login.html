@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{% static 'brand/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <title>AutoTend - Login</title>
+
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <link rel="icon" href="{% static 'icons/icon-192.png' %}">
+    <meta name="theme-color" content="#242424">
+</head>
+<body>
+    <div id="main">
+        <img src="{% static 'brand/logo.png' %}" onclick="window.location.href='{% url 'home' %}'"/>
+        <div class="login-container">
+            <h1 class="login-title">TA Login</h1>
+            <form method = "POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id">ID</label>
+                    <input type="text" id="id" name="id" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="login-button">Login</button>
+            </form>
+        </div>
+    </div>
+</body>
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register("{% static 'sw.js' %}")
+        .then(() => console.log("Service Worker registered"));
+    }
+</script>
+</html>

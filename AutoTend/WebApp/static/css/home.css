@@ -1,0 +1,228 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #121212;
+  color: #e0e0e0;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+#errorMsg{
+  color:red;
+  margin: 0;
+  text-align:center;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #1a1a1a;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.navbar img{
+  max-width: 100px;
+  height: auto;
+  margin-right:auto;
+}
+
+.navbar :hover{
+  cursor: pointer;
+
+}
+
+
+/* Tabs */
+.tab {
+  background: #1f1f1f;
+  color: #ccc;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tab:hover {
+  background-color: #2a2a2a;
+  color: #fff;
+}
+.tab.active {
+  background-color: #4fd1c5;
+  color: #000;
+}
+
+/* Panes */
+.pane {
+  display: none;
+  padding: 2rem 3rem;
+}
+.pane.active {
+  display: block;
+}
+
+/* Table */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  background-color: #181818;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.data-table th, .data-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #2a2a2a;
+}
+.data-table th {
+  background-color: #202020;
+  color: #aaaaaa;
+}
+.data-table td {
+  color: #dddddd;
+}
+
+/* Buttons */
+.btn {
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0.3rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.add-btn { background-color: #4fd1c5; color: #000; }
+.view-btn { background-color: #3182ce; color: #fff; }
+.edit-btn { background-color: #48bb78; color: #fff; }
+.delete-btn { background-color: #e53e3e; color: #fff; }
+.save-btn { background-color: #38a169; color: #fff; }
+.back-btn { background-color: #718096; color: #fff; }
+.btn:hover {
+  opacity: 0.9;
+}
+
+/* Add this */
+.submit-btn {
+  background-color: #4fd1c5;
+  color: #000;
+}
+
+
+/* Modal Overlay */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Modal */
+.modal {
+  background: #1c1c1c;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  border: 1px solid #2a2a2a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 10000;
+}
+
+/* Stats */
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.stat-card {
+  background: #1e1e1e;
+  padding: 1.25rem;
+  border-radius: 6px;
+  border: 1px solid #2a2a2a;
+  text-align: center;
+}
+.stat-number {
+  font-size: 2.25rem;
+  color: #4fd1c5;
+  font-weight: 600;
+}
+.stat-label {
+  color: #999;
+  font-size: 0.9rem;
+  margin-top: 0.4rem;
+}
+
+/* Date input */
+input[type="date"] {
+  background: #202020;
+  color: #ddd;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+
+/* Styled Upload Button */
+#csvUpload {
+  display: none; /* Hide the original file input */
+}
+
+.upload-btn-wrapper {
+  display: inline-block;
+  position: relative;
+}
+
+.upload-btn {
+  background-color: #4fd1c5;
+  color: #000;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.upload-btn:hover {
+  background-color: #38b2ac;
+  transform: scale(1.05);
+}
+
+.upload-btn i {
+  font-size: 1.2rem; /* Icon size */
+}
+
+.upload-btn-text {
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+
+  .pane {
+    padding: 1rem;
+  }
+
+  .add-btn{
+    width:auto;
+  }
+}
