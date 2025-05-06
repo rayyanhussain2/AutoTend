@@ -33,6 +33,46 @@
    s.close()
    ```
 
+## Model Evaluation
+
+We conducted two experiments to evaluate the performance of different face detection models and to assess whether intra-lecture clustering improves identification accuracy.
+
+### Experiment 1: Identifying the Best Face Detection Model and Optimal Thresholds
+
+**Methodology**:  
+We compared three face detection models: **Buffalo L**, **Buffalo Sc**, and **Antelope v2**. Each model was evaluated by computing the average F1 score across all pre-midsem lecture recordings. The experiment was conducted over various combinations of face detection and face similarity thresholds.  
+- *Face detection threshold* refers to the confidence score for whether a detected bounding box actually contains a face.  
+- *Similarity threshold* refers to the cosine similarity score between two face embeddings; it determines whether two faces are considered a match.
+
+**Pipeline Architecture**:  
+For each lecture, a model was run on the faces detected from all photos. For every detected face, we computed the cosine similarity against all ground truth embeddings. If the highest similarity score for any ground truth face exceeded the specified threshold, that student was marked as present.
+
+Below are the F1 score heatmaps for all three models:
+
+#### Buffalo L
+![Buffalo L F1 Scores](image.png)
+
+#### Buffalo Sc
+![Buffalo Sc F1 Scores](image-1.png)
+
+#### Antelope v2
+![Antelope v2 F1 Scores](image-2.png)
+
+**Result**:  
+*Antelope v2* achieved the highest average F1 score across the evaluated thresholds, with a peak F1 score of **93.14%** at a **0.25 similarity threshold** and a **0.3 face detection threshold**, making it the most effective model among the three.
+
+---
+
+### Experiment 2: Assessing the Usefulness of Intra-Lecture Clustering
+
+During each lecture, the TA captures 7–8 photos. We tested whether clustering detected faces within a lecture and applying majority voting (based on ground truth matching) would improve accuracy. This experiment used **Antelope v2**, based on its performance in Experiment 1.
+
+![Intra-Lecture Clustering F1 Scores](image-3.png)
+
+**Result**:  
+Using intra-lecture clustering, the F1 score dropped from a maximum of **93%** to **86.04%**. Hence, we discarded this technique and opted to compare each face individually to the ground truth across all faces.
+
+
 ## Usage
 
 ### 1. **Login**
