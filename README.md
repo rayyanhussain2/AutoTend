@@ -1,5 +1,4 @@
-# Automatic Attendance System  
-**Group 2**
+# AutoTend - Automatic Attendance System
 
 ## 🚀 Installation
 
