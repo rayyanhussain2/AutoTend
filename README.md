@@ -50,13 +50,13 @@ For each lecture, a model was run on the faces detected from all photos. For eve
 Below are the F1 score heatmaps for all three models:
 
 #### Buffalo L
-![Buffalo L F1 Scores](image.png)
+![Buffalo L F1 Scores](docs/screenshots/image-25.png)
 
 #### Buffalo Sc
-![Buffalo Sc F1 Scores](image-1.png)
+![Buffalo Sc F1 Scores](docs/screenshots/image-26.png)
 
 #### Antelope v2
-![Antelope v2 F1 Scores](image-2.png)
+![Antelope v2 F1 Scores](docs/screenshots/image-27.png)
 
 **Result**:  
 *Antelope v2* achieved the highest average F1 score across the evaluated thresholds, with a peak F1 score of **93.14%** at a **0.25 similarity threshold** and a **0.3 face detection threshold**, making it the most effective model among the three.
@@ -67,7 +67,7 @@ Below are the F1 score heatmaps for all three models:
 
 During each lecture, the TA captures 7–8 photos. We tested whether clustering detected faces within a lecture and applying majority voting (based on ground truth matching) would improve accuracy. This experiment used **Antelope v2**, based on its performance in Experiment 1.
 
-![Intra-Lecture Clustering F1 Scores](image-3.png)
+![Intra-Lecture Clustering F1 Scores](docs/screenshots/image-28.png)
 
 **Result**:  
 Using intra-lecture clustering, the F1 score dropped from a maximum of **93%** to **86.04%**. Hence, we discarded this technique and opted to compare each face individually to the ground truth across all faces.
