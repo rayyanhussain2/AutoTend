@@ -134,3 +134,8 @@ Now you can access the system like a native app on your mobile device.
 
    ![alt text](docs/screenshots/image-10.png)
    ![alt text](docs/screenshots/image-24.png)
+
+## 👥 Contributors
+
+- [@rayyanhussain2](https://github.com/rayyanhussain2)
+- [@tanmayhire99](https://github.com/tanmayhire99)
